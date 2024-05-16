@@ -87,21 +87,28 @@ class Home extends MY_Controller
                 'status'   => 200,
                 'error'    => "Falta passar parametro da busca",
                 'success' => null
-                
             );
 
             echo json_encode($response); die;
         }
 
         // Recupera os dados do registro a ser editado
-        $cliente= $this->clientes_model->GetByCnpj($cnpj);
-        $response = array(
-            'status'   => 200,
-            'error'    => null,
-            'success' => $cliente['status'] == 1 ? "PAGO" : "PENDETE"
-            
-        );
-      
+        $cliente = $this->clientes_model->GetByCnpj($cnpj);
+
+        if ($cliente) {
+            $response = array(
+                'status'   => 200,
+                'error'    => null,
+                'success' => $cliente['status'] == 1 ? "PAGO" : "PENDETE"
+            );
+        } else {
+            $response = array(
+                'status'   => 200,
+                'error'    => null,
+                'success' => "sem clientes"
+            );
+        }
+        
         echo json_encode($response);
     }
 
