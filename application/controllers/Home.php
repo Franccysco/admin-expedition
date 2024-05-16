@@ -15,7 +15,7 @@ class Home extends MY_Controller
     {
 
         $dados['titulo'] = 'Home';
-        $dados['clientes'] = array();
+        $dados['clientes'] = $this->clientes_model->GetAll('id');
 
         $this->render_page("home", $dados);
 
@@ -26,7 +26,6 @@ class Home extends MY_Controller
      */
     public function Salvar()
     {
-       
         // Executa o processo de validação do formulário
         $validacao = self::Validar();
         // Verifica o status da validação do formulário
@@ -36,7 +35,7 @@ class Home extends MY_Controller
             // Recupera os dados do formulário
             $cliente = $this->input->post();
             // Insere os dados no banco recuperando o status dessa operação
-            $status = $this->cliente_model->Inserir($cliente);
+            $status = $this->clientes_model->Inserir($cliente);
             // Checa o status da operação gravando a mensagem na seção
             if (!$status) {
                 $this->session->set_flashdata('error', 'Não foi possível inserir o cliente.');
@@ -68,13 +67,42 @@ class Home extends MY_Controller
         }
 
         // Recupera os dados do registro a ser editado
-        $dados['cliente_ed'] = $this->cliente_model->GetById($id);
+        $dados['cliente_ed'] = $this->clientes_model->GetById($id);
         // Passa as clientes para o array que será enviado à home
-        $dados['clientes'] = $this->cliente_model->GetAll('cod_cliente');
+        $dados['clientes'] = $this->clientes_model->GetAll('id');
         // Carrega a view passando os dados do registro
         $dados['titulo'] = 'clientes';
 
         $this->render_page("home", $dados);
+    }
+
+    public function verify_pagamento()
+    {
+        $response = array();
+        // Recupera o cnpj do registro - através da URL - a ser buscado
+        $cnpj = $this->uri->segment(3);
+        // Se não foi passado um cnpj, então retorna um erro
+        if (is_null($cnpj)) {
+            $response = array(
+                'status'   => 200,
+                'error'    => "Falta passar parametro da busca",
+                'success' => null
+                
+            );
+
+            echo json_encode($response); die;
+        }
+
+        // Recupera os dados do registro a ser editado
+        $cliente= $this->clientes_model->GetByCnpj($cnpj);
+        $response = array(
+            'status'   => 200,
+            'error'    => null,
+            'success' => $cliente['status'] == 1 ? "PAGO" : "PENDETE"
+            
+        );
+      
+        echo json_encode($response);
     }
 
     /**
@@ -91,10 +119,10 @@ class Home extends MY_Controller
             // Recupera os dados do formulário
             $cliente = $this->input->post();
             // Atualiza os dados no banco recuperando o status dessa operação
-            $status = $this->cliente_model->Atualizar($cliente['id'], $cliente);
+            $status = $this->clientes_model->Atualizar($cliente['id'], $cliente);
             // Checa o status da operação gravando a mensagem na seção
             if (!$status) {
-                $dados['cliente'] = $this->cliente_model->GetById($cliente['id']);
+                $dados['cliente'] = $this->clientes_model->GetById($cliente['id']);
                 $this->session->set_flashdata('error', 'Não foi possível atualizar o cliente.');
 
             } else {
@@ -108,7 +136,7 @@ class Home extends MY_Controller
         }
 
         // Passa as clientes para o array que será enviado à home
-        $dados['clientes'] = $this->cliente_model->GetAll('cod_cliente');
+        $dados['clientes'] = $this->clientes_model->GetAll('id');
         // Carrega a view para edição
         $dados['titulo'] = 'clientes';
 
@@ -128,7 +156,7 @@ class Home extends MY_Controller
         }
 
         // Remove o registro do banco de dados recuperando o status dessa operação
-        $status = $this->cliente_model->Excluir($id);
+        $status = $this->clientes_model->Excluir($id);
         // Checa o status da operação gravando a mensagem na seção
         if ($status) {
             $this->session->set_flashdata('success', '<p>Cliente excluído com sucesso.</p>');

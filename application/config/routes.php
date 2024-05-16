@@ -83,6 +83,7 @@ $route['ativar-usuario/(:num)'] = 'usuario/ativarUsuario/$1';
 //Clientes
 $route['clientes/cadastro'] = 'home';
 $route['clientes/editar/(:num)'] = 'home/editar/$1';
+$route['clientes/pagamento/(:num)'] = 'home/verify_pagamento/$1';
 $route['salvar-cliente'] = 'home/salvar';
 $route['atualizar-cliente'] = 'home/atualizar';
 $route['exluir-cliente/(:num)'] = 'home/excluir/$1';

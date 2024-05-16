@@ -43,29 +43,31 @@
               <div class="row">
                 <div class="col-md-3">
                   <label id="nome">Nome</label>
-                  <input type="text" id="nome" name="first_name" class="form-control" placeholder="Nome do usuário" value="<?=set_value('first_name')?>"
+                  <input type="text" id="nome" name="nome" class="form-control" placeholder="Nome do usuário" value="<?=set_value('nome')?>"
                     required>
                 </div>
                 <div class="col-md-3">
                   <label id="cnpj">CNPJ</label>
-                  <input type="text" id="nome" name="first_name" class="form-control" placeholder="CNPJ do usuário" value="<?=set_value('first_name')?>"
+                  <input type="text" id="cnpj" name="cnpj" class="form-control" placeholder="CNPJ do usuário" value="<?=set_value('cnpj')?>"
                     required>
                 </div>
                 <div class="col-md-3">
                   <label id="data">Data de Pagamento</label>
-                  <input type="text" name="last_name" class="form-control" placeholder="Sobrenome do usuário" value="<?=set_value('last_name')?>"
+                  <input type="date" name="data_pagamento" class="form-control" placeholder="Data de pagamento" value="<?=set_value('data_pagamento')?>"
                     required>
                 </div>
             
                 <div class="col-md-3">
-                  <label id="senha">Confirmar Senha</label>
-                  <input type="password" name="password_confirm" class="form-control" placeholder="Confirme Senha" value="<?=set_value('password_confirm')?>"
-                    required>
+                  <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status" name="status" class="form-control select2" style="width: 100%;">
+                      <option selected>Selecione o status</option>
+                      <option value="1">Ativo</option>
+                      <option value="0">Inativo</option>
+                    </select>
+                  </div>
                 </div>
-                
-
-                
-
+        
               </div>
             </div>
             <!-- /.box-body -->
@@ -96,75 +98,44 @@
           <form method="post" action="<?=base_url('atualizar-cliente')?>">
             <div class="box-body">
               <div class="row">
-                <div class="col-md-3">
+
+              <div class="col-md-3">
                   <label id="nome">Nome</label>
-                  <input type="text" id="nome" name="first_name" class="form-control" placeholder="Nome do usuário" value="<?=$cliente_ed->first_name?>"
+                  <input type="text" id="nome" name="nome" class="form-control" placeholder="Nome do usuário" value="<?=$cliente_ed['nome']?>"
                     required>
                 </div>
                 <div class="col-md-3">
-                  <label id="cpf">Sobrenome</label>
-                  <input type="text" name="last_name" class="form-control" placeholder="Sobrenome do usuário" value="<?=$cliente_ed->last_name?>"
+                  <label id="cnpj">CNPJ</label>
+                  <input type="text" id="cnpj" name="cnpj" class="form-control" placeholder="CNPJ do usuário" value="<?=$cliente_ed['cnpj']?>"
                     required>
                 </div>
                 <div class="col-md-3">
-                  <label id="login">Login</label>
-                  <input type="text" id="username" name="username" class="form-control" placeholder="Login do usuário" value="<?=$cliente_ed->username?>"
+                  <label id="data">Data de Pagamento</label>
+                  <input type="date" name="data_pagamento" class="form-control" placeholder="Data de pagamento" value="<?=$cliente_ed['data_pagamento']?>"
                     required>
-                </div>
-                <div class="col-md-3">
-                  <label id="senha">Senha <i class="icon fa fa-warning" data-toggle="tooltip"
-                                    title="Preencher somente se quiser alterar a senha" ></i></label>
-                  <input type="password" name="password" class="form-control" placeholder="Senha do usuário" value="<?=set_value('password')?>">
-                </div>
-                <div class="col-md-3">
-                  <label id="senha">Confirmar Senha</label>
-                  <input type="password" name="password_confirm" class="form-control" placeholder="Confirme Senha" value="<?=set_value('password_confirm')?>">
-                    
                 </div>
                 
-
-                <!-- <div class="col-md-3">
-                  <php
-                if (isset($grupos)) {
-                    echo form_label('Grupos', 'grupos[]');
-                    foreach ($grupos as $group) {
-                        echo '<div>';
-                        echo '<label>';
-                        echo '<input type="checkbox" name="grupos[]" class="flat-red" value="$group->id">';
-                       // echo form_checkbox('grupos[]', $group->id, set_checkbox('grupos[]', $group->id));
-                        echo ' ' . $group->name;
-                        echo '</label>';
-                        echo '</div>';
-                    }
-                }
-                ?>
-                </div> -->
-
                 <div class="col-md-3">
-                 <label id="grupo">Grupos:   </label>
+                  <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status" name="status" class="form-control select2" style="width: 100%;">
+                      <option disabled="disabled">Selecione o status</option>
 
-                <?php foreach ($groups as $group): ?>
-              <label  style="margin-top:30px;">
-                    <?php
-                    $gID = $group['id'];
-                    $checked = null;
-                    $item = null;
-                    foreach ($currentGroups as $grp) {
-                        if ($gID == $grp->id) {
-                            $checked = 'checked="checked"';
-                            break;
-                        }
-                    }
-                    ?>
-              <input type="checkbox" class="flat-red" name="groups[]" value="<?php echo $group['id']; ?>"<?php echo $checked; ?>>
-              <?php echo $group['name']; ?>
-              </label>
-          <?php endforeach?>
-                    </div>
+                      <?php if($cliente_ed['status'] == 1){?>
+
+                      <option value="1" selected>Ativo</option>
+                      <option value="0">Inativo</option>
+
+                      <?php } else{?>
+                      <option value="1">Ativo</option>
+                      <option value="0" selected>Inativo</option>
+                      <?php } ?>
+                    </select>
+                  </div>
+                </div>
                 
-
               </div>
-              <input type="hidden" name="id" value="<?=$cliente_ed->id?>" />
+              <input type="hidden" name="id" value="<?=$cliente_ed['id']?>" />
             </div>
             <!-- /.box-body -->
 
@@ -197,6 +168,7 @@
                 <tr>
                   <th style="width: 10px">#</th>
                   <th>Nome</th>
+                  <th>CNPJ</th>
                   <th>Data de pagamento</th>
                   <th>Status</th>
                   <th style="width: 180px">Ações</th>
@@ -218,31 +190,34 @@
                 <?php foreach ($clientes as $cliente){ ?>
                 <tr>
                   <td>
-                    <?=$cliente->id?>
+                    <?=$cliente['id']?>
                   </td>
                   <td>
-                    <?=$cliente->first_name?>
+                    <?=$cliente['nome']?>
                   </td>
                   <td>
-                    <?=$cliente->last_name?>
+                    <?=$cliente['cnpj']?>
                   </td>
                   <td>
-                    <?php echo ($cliente->active == 1) ? '<span class="label label-success">Ativo</span>' : '<span class="label label-default">Inativo</span>' ?>
+                    <?=data($cliente['data_pagamento'])?>
+                  </td>
+                  <td>
+                    <?php echo ($cliente['status'] == 1) ? '<span class="label label-success">Ativo</span>' : '<span class="label label-default">Inativo</span>' ?>
                   </td>
 
                   <td>
-                    <a href="<?=base_url('clientes/editar/'.$cliente->id)?>" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i>
+                    <a href="<?=base_url('clientes/editar/'.$cliente['id'])?>" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i>
                       Editar</a>
-                    <?php if ($cliente->active == 1) {?>
-                    <a href="#" data-toggle="modal" data-target="#desativar-cliente" data-customer="<?php echo $cliente->id;?>"
-                      data-rota="<?php echo base_url('desativar-cliente/');?>" data-nome="<?php echo $cliente->username?>" class="btn btn-success btn-xs"><i class="fa fa-toggle-on"></i>
+                    <?php if ($cliente['status'] == 1) {?>
+                    <a href="#" data-toggle="modal" data-target="#desativar-cliente" data-customer="<?php echo $cliente['id'];?>"
+                      data-rota="<?php echo base_url('desativar-cliente/');?>" data-nome="<?php echo $cliente['nome']?>" class="btn btn-success btn-xs"><i class="fa fa-toggle-on"></i>
                       Desativar</a>
                     <?php }else{?>
-                    <a href="<?=base_url('ativar-cliente/'.$cliente->id)?>" class="btn btn-default btn-xs"><i class="fa fa-toggle-off"></i>
+                    <a href="<?=base_url('ativar-cliente/'.$cliente['id'])?>" class="btn btn-default btn-xs"><i class="fa fa-toggle-off"></i>
                       Ativar</a>
                     <?php }?>
 
-                    <a href="#" data-toggle="modal" data-target="#delete-modal" data-customer="<?php echo $cliente->id;?>"
+                    <a href="#" data-toggle="modal" data-target="#delete-modal" data-customer="<?php echo $cliente['id'];?>"
                       data-rota="<?php echo base_url('exluir-cliente/');?>" class="btn btn-danger btn-xs">
                       <i class="fa fa-trash"></i> Excluir</a>
                   </td>
@@ -259,13 +234,6 @@
         </div>
       </div>
     </div>
-
-
-
-    <!-- Modal clientes cadastro -->
-    <!-- <php $this->load->view('modal-client-create')?>
-    <php $this->load->view('modal-client-update')?> -->
-
 
   </section>
   <!-- /.content -->

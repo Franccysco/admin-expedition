@@ -1,67 +1,52 @@
 <?php
-class Doca_model extends MY_Model
+class Clientes_model extends MY_Model
 {
 
-    public $column_order = array("cod_doca", "status", "qnt_vagas", "tipo");
-    public $column_search = array("cod_doca",);
-    public $order = array("cod_doca" => "asc");
+    public $column_order = array("id", "status", "nome", "cnpj");
+    public $column_search = array("id",);
+    public $order = array("id" => "asc");
 
 
     public function __construct()
     {
         parent::__construct();
-        $this->table = 'doca';
+        $this->table = 'clientes';
     }
 
-    public function qtdPaletes($id_doca)
+    
+
+    //Atualiza status da cliente; Procurar uma solução melhor pra isso na view
+    public function updateStatus($id_cliente, $status)
     {
-
-        $sql = "
-            SELECT 
-                COUNT(a.id) AS qtdPlt 
-            FROM
-                palete a
-                    INNER JOIN
-                palete_has_doca b ON a.id = b.palete_id
-            WHERE
-                b.doca_id = {$id_doca} 
-        ";
-
-        $query = $this->db->query($sql);
-        $array = $query->row_array();
-        return $qtdPaltes = $array['qtdPlt'];
+        $cliente = $this->GetById($id_cliente);
+        $cliente['status'] = $status;
+        $this->Atualizar($id_cliente, $cliente);
     }
 
-    //Atualiza status da doca; Procurar uma solução melhor pra isso na view
-    public function updateStatus($id_doca, $status)
+    public function chekckStatus($id_cliente)
     {
-        $doca = $this->GetById($id_doca);
-        $doca['status'] = $status;
-        $this->Atualizar($id_doca, $doca);
-    }
-
-    public function chekckStatus($id_doca)
-    {
-        $doca = $this->GetById($id_doca);
-        if ($doca['status'] == 0) {
+        $cliente = $this->GetById($id_cliente);
+        if ($cliente['status'] == 0) {
             return 0;
         } else {
             return 1;
         }
     }
 
-    public function checkLimite($id_doca)
+    public function GetByCnpj($cnpj)
     {
-        //Busca a qtd atual de paletes na doca
-        $qtdAtual = $this->qtdPaletes($id_doca);
-        //Buscar a qtd limite suportada na doca
-        $doca = $this->GetById($id_doca);
-        $qtdLimite = $doca['qnt_vagas'];
+        if (is_null($cnpj))
+            return false;
 
-        if ($qtdAtual >= $qtdLimite) {
-            $this->updateStatus($doca['id'], 0);
+        $this->db->where('cnpj', $cnpj);
+        $query = $this->db->get($this->table);
+
+        if ($query->num_rows() > 0) {
+            return $query->row_array();
         } else {
-            $this->updateStatus($doca['id'], 1);
+            return null;
         }
     }
+
+    
 }
