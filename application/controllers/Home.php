@@ -105,7 +105,7 @@ class Home extends MY_Controller
             $response = array(
                 'status'   => 200,
                 'error'    => null,
-                'success' => "sem clientes"
+                'success' => "Cliente nao encontrado"
             );
         }
         
